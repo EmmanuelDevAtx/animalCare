@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: Mit
 pragma solidity ^0.8.9;
 
-import './AnimalFactory.sol';
+import './FeedingAnimal.sol';
 
-contract AnimalHelper is AnimalFactory {
+contract AnimalHelper is  FeedingAnimal{
     function totalAnimalOwner() public view returns (uint256) {
         return animalOwnerCount[msg.sender];
     }

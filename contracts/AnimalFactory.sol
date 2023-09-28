@@ -5,6 +5,8 @@ contract AnimalFactory {
     struct Animal {
         string name;
         uint256 level;
+        uint8 countFeed;
+
     }
     event NewAnimal(string name, uint level);
 
@@ -17,7 +19,7 @@ contract AnimalFactory {
 
     function createNewAnimal(string memory _name) public {
         require(animalOwnerCount[msg.sender] < 3);
-        animals.push(Animal(_name, 0));
+        animals.push(Animal(_name, 0, 0));
         emit NewAnimal(_name, 0);
         animalToOwner[animals.length - 1] = msg.sender;
         animalOwnerCount[msg.sender]++;
