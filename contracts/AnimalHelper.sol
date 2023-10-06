@@ -4,18 +4,16 @@ pragma solidity ^0.8.9;
 import "./AnimalFactory.sol";
 
 contract AnimalHelper is AnimalFactory {
-    uint8 maxPoints = 10;
+    uint8 maxTargetLevel = 10;
     uint8 maxFeed = 4;
     uint8 maxFeedFat = maxFeed * 2;
-    uint8 maxTired = 10;
-    uint256 timeWaitBathroom = 3 minutes;
 
     modifier validNeedBathroom(uint256 _animalId) {
         //TODO: mostrar el mensaje de Que "necesita un baño";
 
         if (
             animals[_animalId].timeBathroomUse >
-            uint256(block.timestamp + timeWaitBathroom)
+            uint256(block.timestamp)
         ) {
             animals[_animalId].needsBathroom = true;
         }
@@ -25,7 +23,7 @@ contract AnimalHelper is AnimalFactory {
     }
 
     modifier animalCanPlay(uint256 _animalId){
-        if(animals[_animalId].tired > (maxTired / 2) ){
+        if(animals[_animalId].tired > (maxTargetLevel / 2) ){
             animals[_animalId].canPlay = true;
         } 
 
@@ -57,7 +55,7 @@ contract AnimalHelper is AnimalFactory {
         uint256 _animalId,
         uint8 _points
     ) internal validOwner(_animalId) {
-        if (animals[_animalId].currentPoints > maxPoints) {
+        if (animals[_animalId].currentPoints > maxTargetLevel) {
             animals[_animalId].currentPoints = 0;
             animals[_animalId].currentPoints += _points;
             animals[_animalId].level++;

@@ -1,7 +1,12 @@
 // SPDX-License-Identifier: Mit
 pragma solidity ^0.8.9;
 
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+
 contract AnimalFactory {
+    
+    using SafeMath for uint256;
+    
     struct Animal {
         string name;
 
@@ -21,6 +26,10 @@ contract AnimalFactory {
     }
     event NewAnimal(string name, uint level);
 
+
+    uint256 timeWaitBathroom = 2 hours;
+    uint256 timeReduceBathroom = 1 hours;
+
     mapping(uint => address) public animalToOwner;
     mapping(address => uint) animalOwnerCount;
 
@@ -36,9 +45,9 @@ contract AnimalFactory {
 
     function createNewAnimal(string memory _name) public {
         require(animalOwnerCount[msg.sender] < 3);
-        animals.push(Animal(_name, 0,0,0,0,0,0, 0,0 , false, true, true));
+        animals.push(Animal(_name, 0,0,0,5,0,0, 0,uint256(block.timestamp + timeWaitBathroom), false, true, true));
         emit NewAnimal(_name, 0);
         animalToOwner[animals.length - 1] = msg.sender;
-        animalOwnerCount[msg.sender]++;
+        animalOwnerCount[msg.sender].add(1);
     }
 }

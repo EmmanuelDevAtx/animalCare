@@ -4,33 +4,38 @@ pragma solidity ^0.8.9;
 import "./FeedAnimal.sol";
 
 contract AnimalActions is FeedAnimal {
+
+    using SafeMath for uint8;
+
     function useBath(uint256 _animalId) public validOwner(_animalId) {
-        uint256 currentTime = uint256(block.timestamp) + timeWaitBathroom;
-        require(animals[_animalId].timeBathroomUse > currentTime);
+        uint256 currentTime = uint256(block.timestamp) + timeReduceBathroom;
+        require(animals[_animalId].timeBathroomUse > currentTime, 'El tiempo del uso del bathroom debe ser mayor');
         animals[_animalId].timeBathroomUse = currentTime;
         _increasePoints(_animalId, 1);
-        animals[_animalId].dirty++;
+        animals[_animalId].dirty.add(1);
     }
 
     function doExercise(uint256 _animalId) public validOwner(_animalId) {
-        require(animals[_animalId].exerciseCount <= maxExcercise);
-        animals[_animalId].exerciseCount++;
+        require(animals[_animalId].exerciseCount <= maxTargetLevel);
+        animals[_animalId].exerciseCount.add(1);
         _increaseNeedBathRoom(_animalId);
 
         //TODO hacer un Random entre 1 - 2
         uint8 points = 2;
 
         _increasePoints(_animalId, points);
-        animals[_animalId].dirty++;
-        animals[_animalId].tired++;
+        animals[_animalId].dirty.sub(1);
+        animals[_animalId].tired.add(1);
     }
 
     function takeABath(uint256 _animalId) public validOwner(_animalId) {
         require(animals[_animalId].dirty > 0);
+
         if ((animals[_animalId].dirty / 2) == 5) {
             _increasePoints(_animalId, 1);
         }
-        animals[_animalId].dirty -= 4;
+
+        animals[_animalId].dirty.sub(4);
         _increaseNeedBathRoom(_animalId);
     }
 
@@ -40,10 +45,10 @@ contract AnimalActions is FeedAnimal {
         uint8 pointsPlay = 2;
 
         _increasePoints(_animalId, pointsPlay);
-        animals[_animalId].tired += pointsPlay;
-        animals[_animalId].dirty += (pointsPlay - 1);
+        animals[_animalId].tired.add(pointsPlay);
+        animals[_animalId].dirty.add(pointsPlay - 1);
 
-        if(animals[_animalId].tired >= maxTired){
+        if(animals[_animalId].tired >= maxTargetLevel){
             animals[_animalId].canPlay = false;
         }
         
