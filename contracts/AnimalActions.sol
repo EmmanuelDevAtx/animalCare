@@ -16,16 +16,17 @@ contract AnimalActions is FeedAnimal {
     }
 
     function doExercise(uint256 _animalId) public validOwner(_animalId) {
-        require(animals[_animalId].exerciseCount <= maxTargetLevel);
-        animals[_animalId].exerciseCount.add(1);
+        require(animals[_animalId].exerciseCount < maxTargetLevel);
+        animals[_animalId].exerciseCount = uint8(animals[_animalId].exerciseCount.add(1));
         _increaseNeedBathRoom(_animalId);
 
         //TODO hacer un Random entre 1 - 2
         uint8 points = 2;
 
         _increasePoints(_animalId, points);
-        animals[_animalId].dirty.sub(1);
-        animals[_animalId].tired.add(1);
+        
+        animals[_animalId].dirty = uint8(animals[_animalId].dirty.add(1));
+        animals[_animalId].tired = uint8(animals[_animalId].tired.add(1));
     }
 
     function takeABath(uint256 _animalId) public validOwner(_animalId) {
@@ -35,22 +36,18 @@ contract AnimalActions is FeedAnimal {
             _increasePoints(_animalId, 1);
         }
 
-        animals[_animalId].dirty.sub(4);
+        animals[_animalId].dirty = uint8(_checkCeroValue(animals[_animalId].dirty,4));
         _increaseNeedBathRoom(_animalId);
     }
 
     function play(uint256 _animalId) public validOwner(_animalId) animalCanPlay(_animalId){
-
         //TODO hacer un Random entre 1 - 3;
         uint8 pointsPlay = 2;
 
         _increasePoints(_animalId, pointsPlay);
-        animals[_animalId].tired.add(pointsPlay);
-        animals[_animalId].dirty.add(pointsPlay - 1);
+        animals[_animalId].tired = uint8(animals[_animalId].tired.add(pointsPlay));
+        animals[_animalId].dirty = uint8(animals[_animalId].dirty.add(pointsPlay - 1));
 
-        if(animals[_animalId].tired >= maxTargetLevel){
-            animals[_animalId].canPlay = false;
-        }
-        
+
     }
 }

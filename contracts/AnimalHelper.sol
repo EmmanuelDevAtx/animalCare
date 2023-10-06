@@ -6,28 +6,31 @@ import "./AnimalFactory.sol";
 contract AnimalHelper is AnimalFactory {
     uint8 maxTargetLevel = 10;
     uint8 maxFeed = 4;
-    uint8 maxFeedFat = maxFeed * 2;
+
+    using SafeMath for uint256;
+    using SafeMath for uint8;
+
 
     modifier validNeedBathroom(uint256 _animalId) {
         //TODO: mostrar el mensaje de Que "necesita un baño";
 
         if (
             animals[_animalId].timeBathroomUse >
-            uint256(block.timestamp)
+            uint256(block.timestamp + timeWaitBathroom)
         ) {
             animals[_animalId].needsBathroom = true;
         }
 
-        require(!animals[_animalId].needsBathroom);
+        require(!animals[_animalId].needsBathroom,'Necesita ir al bano');
         _;
     }
 
     modifier animalCanPlay(uint256 _animalId){
-        if(animals[_animalId].tired > (maxTargetLevel / 2) ){
-            animals[_animalId].canPlay = true;
+        if(animals[_animalId].tired > 10 ){
+            animals[_animalId].canPlay = false;
         } 
 
-        require(animals[_animalId].canPlay);
+        require(animals[_animalId].canPlay == true );
         _;
     }
 
@@ -40,11 +43,11 @@ contract AnimalHelper is AnimalFactory {
             animalOwnerCount[msg.sender]
         );
 
-        uint counter = 0;
-        for (uint i = 0; i < animals.length; i++) {
+        uint8 counter = 0;
+        for (uint i = 0; i < animals.length; i = i.add(1)) {
             if (animalToOwner[i] == msg.sender) {
                 animalsOwner[counter] = animals[i];
-                counter++;
+                counter = uint8(counter.add(1));
             }
         }
 
@@ -57,21 +60,26 @@ contract AnimalHelper is AnimalFactory {
     ) internal validOwner(_animalId) {
         if (animals[_animalId].currentPoints > maxTargetLevel) {
             animals[_animalId].currentPoints = 0;
-            animals[_animalId].currentPoints += _points;
-            animals[_animalId].level++;
-        } else {
-            animals[_animalId].currentPoints += _points;
-        }
+            animals[_animalId].level = uint8(animals[_animalId].level.add(1));
+        } 
+        animals[_animalId].currentPoints = uint8(animals[_animalId].currentPoints.add(_points));
     }
 
     function _increaseNeedBathRoom(uint256 _animalId) internal {
-        animals[_animalId].timeBathroomUse -= timeWaitBathroom;
+        animals[_animalId].timeBathroomUse = uint256(animals[_animalId].timeBathroomUse.sub(timeWaitBathroom));
     }
 
     function _increaseFat(uint256 _animalId) internal {
-        animals[_animalId].fatCount++;
-        if (animals[_animalId].fatCount >= maxFeedFat) {
+        animals[_animalId].fatCount = uint8(animals[_animalId].fatCount.add(1)) ;
+        if (animals[_animalId].fatCount >= maxTargetLevel) {
             animals[_animalId].canFeed = false;
         }
+    }
+
+    function _checkCeroValue(uint _value, uint8 _reduceValue) internal pure  returns(uint){
+        if(_value != 0){
+            return (_value - _reduceValue);
+        }
+        return 0;
     }
 }

@@ -36,7 +36,7 @@ contract AnimalFactory {
     Animal[] public animals;
 
     modifier validOwner(uint256 _animalId) {
-        require(animalToOwner[_animalId] == msg.sender);
+        require(animalToOwner[_animalId] == msg.sender, 'You are not the owner');
         _;
     }
 
