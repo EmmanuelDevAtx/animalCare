@@ -12,12 +12,12 @@ contract AnimalActions is FeedAnimal {
         require(animals[_animalId].timeBathroomUse > currentTime, 'El tiempo del uso del bathroom debe ser mayor');
         animals[_animalId].timeBathroomUse = currentTime;
         _increasePoints(_animalId, 1);
-        animals[_animalId].dirty.add(1);
+        animals[_animalId].dirty = uint8(_checkMaxNumber(animals[_animalId].dirty.add(1)));
     }
 
     function doExercise(uint256 _animalId) public validOwner(_animalId) {
         require(animals[_animalId].exerciseCount < maxTargetLevel);
-        animals[_animalId].exerciseCount = uint8(animals[_animalId].exerciseCount.add(1));
+        animals[_animalId].exerciseCount = uint8(_checkMaxNumber(animals[_animalId].exerciseCount.add(1)));
         _increaseNeedBathRoom(_animalId);
 
         //TODO hacer un Random entre 1 - 2
@@ -25,8 +25,8 @@ contract AnimalActions is FeedAnimal {
 
         _increasePoints(_animalId, points);
         
-        animals[_animalId].dirty = uint8(animals[_animalId].dirty.add(1));
-        animals[_animalId].tired = uint8(animals[_animalId].tired.add(1));
+        animals[_animalId].dirty = uint8(_checkMaxNumber(animals[_animalId].dirty.add(1)));
+        animals[_animalId].tired = uint8(_checkMaxNumber(animals[_animalId].tired.add(1)));
     }
 
     function takeABath(uint256 _animalId) public validOwner(_animalId) {
@@ -45,8 +45,8 @@ contract AnimalActions is FeedAnimal {
         uint8 pointsPlay = 2;
 
         _increasePoints(_animalId, pointsPlay);
-        animals[_animalId].tired = uint8(animals[_animalId].tired.add(pointsPlay));
-        animals[_animalId].dirty = uint8(animals[_animalId].dirty.add(pointsPlay - 1));
+        animals[_animalId].tired = uint8(_checkMaxNumber(animals[_animalId].tired.add(pointsPlay)));
+        animals[_animalId].dirty = uint8(_checkMaxNumber(animals[_animalId].dirty.add(pointsPlay - 1)));
 
 
     }
