@@ -58,11 +58,15 @@ contract AnimalHelper is AnimalFactory {
         uint256 _animalId,
         uint8 _points
     ) internal validOwner(_animalId) {
-        if (animals[_animalId].currentPoints > maxTargetLevel) {
-            animals[_animalId].currentPoints = 0;
+
+        uint8 _currentPoints = uint8(animals[_animalId].currentPoints.add(_points));
+
+        if (_currentPoints >= maxTargetLevel) {
+            animals[_animalId].currentPoints = (_currentPoints > maxTargetLevl) ? _currentPoints-maxTargetLevel : 0;
             animals[_animalId].level = uint8(animals[_animalId].level.add(1));
-        } 
-        animals[_animalId].currentPoints = uint8(animals[_animalId].currentPoints.add(_points));
+        }else{
+            animals[_animalId].currentPoints = _currentPoints; 
+        }
     }
 
     function _increaseNeedBathRoom(uint256 _animalId) internal {
@@ -81,5 +85,12 @@ contract AnimalHelper is AnimalFactory {
             return (_value - _reduceValue);
         }
         return 0;
+    }
+
+    function _checkMaxNumber(uint _value)internal pure returns(uint){
+        if(_value >= maxTargetLevel){
+            return maxTargetLevel;
+        }
+        return _value;
     }
 }
