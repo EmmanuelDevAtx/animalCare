@@ -46,7 +46,7 @@ contract FeedAnimal is AnimalHelper {
 
     function _increaseLevelAnimal(
         uint256 _animalId
-    ) private  view validOwner(_animalId) {
+    ) private  validOwner(_animalId)  {
         animals[_animalId].level = animals[_animalId].level.add(1);
     }
 

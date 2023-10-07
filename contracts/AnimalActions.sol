@@ -35,7 +35,7 @@ contract AnimalActions is FeedAnimal {
         if ((animals[_animalId].dirty / 2) == 5) {
             _increasePoints(_animalId, 1);
         }
-
+         animals[_animalId].tired = uint8(_checkCeroValue(animals[_animalId].tired, 2));
         animals[_animalId].dirty = uint8(_checkCeroValue(animals[_animalId].dirty,4));
         _increaseNeedBathRoom(_animalId);
     }
