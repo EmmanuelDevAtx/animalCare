@@ -9,7 +9,7 @@ contract AnimalActions is FeedAnimal {
 
     function useBath(uint256 _animalId) public validOwner(_animalId) {
         uint256 currentTime = uint256(block.timestamp) + timeReduceBathroom;
-        require(animals[_animalId].timeBathroomUse > currentTime, 'El tiempo del uso del bathroom debe ser mayor');
+        require(animals[_animalId].timeBathroomUse < block.timestamp, 'El tiempo del uso del bathroom debe ser mayor');
         animals[_animalId].timeBathroomUse = currentTime;
         _increasePoints(_animalId, 1);
         animals[_animalId].dirty = uint8(_checkMaxNumber(animals[_animalId].dirty.add(1)));
