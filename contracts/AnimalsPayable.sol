@@ -5,11 +5,24 @@ import "./AnimalActions.sol";
 
 contract AnimalsPayable is AnimalActions{
 
-    function payAnyEht(address payable _to) payable {
-        _to.transfer(msg.value);
+    address payable contractAddress;
+    address owner;
+    
+    constructor(address payable payableContract){
+        contractAddress = payableContract;
+        owner = msg.sender;
     }
 
-    function showAmount() view returns(uint256){
-        return address(this).balance;
+
+    //Todo: Update this function like, reduceFat, excecie etc..
+    function payAnyEht() public  payable {
+        contractAddress.transfer(msg.value);
     }
+
+    function changeContractPayable(address payable _contractAddress) public {
+        require(owner == msg.sender);
+        contractAddress = _contractAddress;
+    }
+
+
 }
