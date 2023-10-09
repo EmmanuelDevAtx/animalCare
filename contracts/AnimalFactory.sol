@@ -3,11 +3,14 @@ pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-contract AnimalFactory {
+import "./AnimalItems.sol";
+
+contract AnimalFactory is AnimalItems{
     
     using SafeMath for uint256;
-    
+
     struct Animal {
+
         string name;
 
         uint8 fatCount;
@@ -24,8 +27,8 @@ contract AnimalFactory {
         bool canPlay;
         bool canFeed;
     }
-    event NewAnimal(string name, uint level);
 
+    event NewAnimal(string name, uint level);
 
     uint256 timeWaitBathroom = 2 hours;
     uint256 timeReduceBathroom = 1 hours;
@@ -39,9 +42,6 @@ contract AnimalFactory {
         require(animalToOwner[_animalId] == msg.sender, 'You are not the owner');
         _;
     }
-
-
-    constructor() {}
 
     function createNewAnimal(string memory _name) public {
         require(animalOwnerCount[msg.sender] < 3);
