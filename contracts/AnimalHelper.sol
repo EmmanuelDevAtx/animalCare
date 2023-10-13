@@ -80,16 +80,6 @@ contract AnimalHelper is AnimalFactory {
         }
     }
 
-    function _checkCeroValue(uint _value, uint8 _reduceValue) internal pure  returns(uint){
-        if(_value < _reduceValue ){
-            return 0;
-        }
-        if(_value != 0){
-            return (_value - _reduceValue);
-        }
-        return 0;
-    }
-
     function _checkMaxNumber(uint _value)internal view returns(uint){
         if(_value >= maxTargetLevel){
             return maxTargetLevel;
