@@ -53,5 +53,12 @@ contract AnimalsPayable is AnimalActions{
         }
     }
 
+    function buyMeal(uint _amount, Food _foodSelected) public payable returns(bool){
+        uint currentPrice = 1 ether * _amount;
+        _payAnimalAction(currentPrice);
+        addMeal(_amount, _foodSelected);
+        return(true);
+    }   
+
 
 }

@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: Mit
 pragma solidity ^0.8.9;
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-
 import "./AnimalItems.sol";
 
 contract AnimalFactory is AnimalItems{
@@ -48,6 +46,7 @@ contract AnimalFactory is AnimalItems{
         animals.push(Animal(_name, 0,0,0,5,0,0, 0,uint256(block.timestamp + timeWaitBathroom), false, true, true));
         emit NewAnimal(_name, 0);
         animalToOwner[animals.length - 1] = msg.sender;
-        animalOwnerCount[msg.sender].add(1);
+        animalOwnerCount[msg.sender] = animalOwnerCount[msg.sender].add(1);
+        _createOwnerToItem();
     }
 }

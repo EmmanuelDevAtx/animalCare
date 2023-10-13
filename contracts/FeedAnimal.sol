@@ -14,10 +14,11 @@ contract FeedAnimal is AnimalHelper {
     using SafeMath for uint256;
 
 
-    function feedAnimal(uint256 _animalId) public validOwner(_animalId) validNeedBathroom(_animalId){
+    function feedAnimal(uint256 _animalId, Food _foodSelected) public validOwner(_animalId) validNeedBathroom(_animalId){
         //First require that your animal get not limit fat to can feed
         require(animals[_animalId].canFeed == true);
         animals[_animalId].feedCount = uint8(_checkMaxNumber(animals[_animalId].feedCount.add(1)));
+        _reduceItem(_foodSelected);
 
         Animal memory currentAnimal = animals[_animalId];
         
