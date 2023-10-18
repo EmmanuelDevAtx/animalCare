@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: Mit
 pragma solidity ^0.8.9;
 
-import "./AnimalItems.sol";
+import "./AnimalRewards.sol";
 
-contract AnimalFactory is AnimalItems{
+contract AnimalFactory is AnimalReward{
     
     using SafeMath for uint256;
 
@@ -45,6 +45,7 @@ contract AnimalFactory is AnimalItems{
         require(animalOwnerCount[msg.sender] < 3);
         animals.push(Animal(_name, 0,0,0,5,0,0, 0,uint256(block.timestamp + timeWaitBathroom), false, true, true));
         emit NewAnimal(_name, 0);
+        _createPoints();
         animalToOwner[animals.length - 1] = msg.sender;
         animalOwnerCount[msg.sender] = animalOwnerCount[msg.sender].add(1);
         _createOwnerToItem();
