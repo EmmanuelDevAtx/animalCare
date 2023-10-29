@@ -4,8 +4,6 @@ pragma solidity ^0.8.9;
 import "./AnimalRewards.sol";
 
 contract AnimalFactory is AnimalReward{
-    
-    using SafeMath for uint256;
 
     struct Animal {
 
@@ -27,6 +25,8 @@ contract AnimalFactory is AnimalReward{
     }
 
     event NewAnimal(string name, uint level);
+    
+    uint16 maxLevelAndPoints = 500;
 
     uint256 timeWaitBathroom = 2 hours;
     uint256 timeReduceBathroom = 1 hours;
@@ -34,10 +34,18 @@ contract AnimalFactory is AnimalReward{
     mapping(uint => address) public animalToOwner;
     mapping(address => uint) animalOwnerCount;
 
+    mapping(uint => address) public shareAnimalWith;
+    mapping(address => uint8 ) public countSharedOwnAnimal;
+
     Animal[] public animals;
 
     modifier validOwner(uint256 _animalId) {
-        require(animalToOwner[_animalId] == msg.sender, 'You are not the owner');
+        require(animalToOwner[_animalId] == msg.sender  || shareAnimalWith[_animalId] == msg.sender, 'You are not the owner');
+        _;
+    }
+
+    modifier validPermisions(uint256 _animalId) {
+        require(shareAnimalWith[_animalId] == msg.sender, 'You have not permision');
         _;
     }
 
@@ -47,7 +55,7 @@ contract AnimalFactory is AnimalReward{
         emit NewAnimal(_name, 0);
         _createPoints();
         animalToOwner[animals.length - 1] = msg.sender;
-        animalOwnerCount[msg.sender] = animalOwnerCount[msg.sender].add(1);
+        animalOwnerCount[msg.sender] = animalOwnerCount[msg.sender] + 1;
         _createOwnerToItem();
     }
 }

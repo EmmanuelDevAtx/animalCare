@@ -7,13 +7,8 @@ contract AnimalHelper is AnimalFactory {
     uint8 maxTargetLevel = 10;
     uint8 maxFeed = 4;
 
-    using SafeMath for uint256;
-    using SafeMath for uint8;
-
 
     modifier validNeedBathroom(uint256 _animalId) {
-        //TODO: mostrar el mensaje de Que "necesita un baño";
-
         if (
             animals[_animalId].timeBathroomUse >
             uint256(block.timestamp + timeWaitBathroom)
@@ -26,11 +21,9 @@ contract AnimalHelper is AnimalFactory {
     }
 
     modifier animalCanPlay(uint256 _animalId){
-        if(animals[_animalId].tired >= maxTargetLevel ){
-            animals[_animalId].canPlay = false;
-        } 
 
-        require(animals[_animalId].canPlay == true );
+
+        require(animals[_animalId].canPlay == true,'The animal is tired' );
         _;
     }
 
@@ -38,16 +31,16 @@ contract AnimalHelper is AnimalFactory {
         return animalOwnerCount[msg.sender];
     }
 
-    function getAnimalsOwner() public view returns (Animal[] memory) {
-        Animal[] memory animalsOwner = new Animal[](
+    function getAnimalsOwner() public view returns (uint8[] memory) {
+        uint8[] memory animalsOwner = new uint8[](
             animalOwnerCount[msg.sender]
         );
 
         uint8 counter = 0;
-        for (uint i = 0; i < animals.length; i = i.add(1)) {
+        for (uint8 i = 0; i < animals.length; i++) {
             if (animalToOwner[i] == msg.sender) {
-                animalsOwner[counter] = animals[i];
-                counter = uint8(counter.add(1));
+                animalsOwner[counter] = uint8(i);
+                counter = uint8(counter + 1);
             }
         }
 
@@ -59,31 +52,25 @@ contract AnimalHelper is AnimalFactory {
         uint8 _points
     ) internal validOwner(_animalId) {
 
-        uint8 _currentPoints = uint8(animals[_animalId].currentPoints.add(_points));
+        uint8 _currentPoints = uint8(animals[_animalId].currentPoints + _points);
 
         if (_currentPoints >= maxTargetLevel) {
             animals[_animalId].currentPoints = (_currentPoints > maxTargetLevel) ? _currentPoints-maxTargetLevel : 0;
-            animals[_animalId].level = uint8(animals[_animalId].level.add(1));
+            animals[_animalId].level = uint8(animals[_animalId].level + _points);
         }else{
             animals[_animalId].currentPoints = _currentPoints; 
         }
     }
 
     function _increaseNeedBathRoom(uint256 _animalId) internal {
-        animals[_animalId].timeBathroomUse = uint256(animals[_animalId].timeBathroomUse.sub(timeWaitBathroom));
+        animals[_animalId].timeBathroomUse = uint256(animals[_animalId].timeBathroomUse - timeWaitBathroom);
     }
 
     function _increaseFat(uint256 _animalId) internal {
-        animals[_animalId].fatCount = uint8(animals[_animalId].fatCount.add(1)) ;
+        animals[_animalId].fatCount = uint8(animals[_animalId].fatCount + 1) ;
         if (animals[_animalId].fatCount >= maxTargetLevel) {
             animals[_animalId].canFeed = false;
         }
     }
 
-    function _checkMaxNumber(uint _value)internal view returns(uint){
-        if(_value >= maxTargetLevel){
-            return maxTargetLevel;
-        }
-        return _value;
-    }
 }
