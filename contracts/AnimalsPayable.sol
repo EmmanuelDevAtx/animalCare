@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Mit
+//SPDX-License-Identifier: Mit
 pragma solidity ^0.8.9;
 
 import "./AnimalActions.sol";
@@ -9,26 +9,25 @@ contract AnimalsPayable is AnimalActions{
     address owner;
     uint valuePrice;
     
-    using SafeMath for uint256;
     
     constructor(address payable payableContract){
         contractAddress = payableContract;
         owner = msg.sender;
-        valuePrice = 1 ether;
+        valuePrice = 0.0001 ether;
 
     }
     
     //TODO: put all function payable, and next think about some rewards;
     
-    function reduceFatAndTired(uint _animalId) public  payable validOwner(_animalId){
+    function reduceFatAndTired(uint _animalId) public  payable validOwner(_animalId) validPermisions(_animalId){
        _payAnimalAction(valuePrice);
-       animals[_animalId].tired = uint8(_checkCeroValue(animals[_animalId].tired, 6));
-       animals[_animalId].fatCount = uint8(_checkCeroValue(animals[_animalId].fatCount, 6));
+       animals[_animalId].tired = uint8(MathLibrary._checkCeroValue(animals[_animalId].tired, 6));
+       animals[_animalId].fatCount = uint8(MathLibrary._checkCeroValue(animals[_animalId].fatCount, 6));
     }
 
-    function upgradeLevel(uint _animalId) public  payable validOwner(_animalId){
-       _payAnimalAction(valuePrice + 1 ether);
-       animals[_animalId].level = animals[_animalId].level.add(10);
+    function upgradeLevel(uint _animalId) public  payable validOwner(_animalId) validPermisions(_animalId) {
+       _payAnimalAction(valuePrice);
+       animals[_animalId].level = animals[_animalId].level + 10;
     }
 
     function changeContractPayable(address payable _contractAddress) public {
@@ -42,7 +41,6 @@ contract AnimalsPayable is AnimalActions{
     }
 
     function _payAnimalAction(uint _valuaPrice) internal {
-        // First require that the value price its less or equal user sender eth
         require(msg.value >= _valuaPrice, "Your amount its less that the price");
         
         uint change = msg.value - _valuaPrice;
@@ -53,10 +51,11 @@ contract AnimalsPayable is AnimalActions{
         }
     }
 
-    function buyMeal(uint _amount, Food _foodSelected) public payable returns(bool){
-        uint currentPrice = 1 ether * _amount;
+    function buyPoints(uint _amount) public payable returns(bool){
+        require(ownerPoints[msg.sender] > maxLevelAndPoints, 'Check your points, max are 500');
+        uint currentPrice = valuePrice * _amount;
         _payAnimalAction(currentPrice);
-        addMeal(_amount, _foodSelected);
+        ownerPoints[msg.sender] = MathLibrary._checkMaxNumber(ownerPoints[msg.sender] + _amount, maxLevelAndPoints);
         return(true);
     }   
 
