@@ -19,13 +19,13 @@ contract AnimalsPayable is AnimalActions{
     
     //TODO: put all function payable, and next think about some rewards;
     
-    function reduceFatAndTired(uint _animalId) public  payable validOwner(_animalId) validPermisions(_animalId){
+    function reduceFatAndTired(uint _animalId) public  payable validOwner(_animalId) {
        _payAnimalAction(valuePrice);
        animals[_animalId].tired = uint8(MathLibrary._checkCeroValue(animals[_animalId].tired, 6));
        animals[_animalId].fatCount = uint8(MathLibrary._checkCeroValue(animals[_animalId].fatCount, 6));
     }
 
-    function upgradeLevel(uint _animalId) public  payable validOwner(_animalId) validPermisions(_animalId) {
+    function upgradeLevel(uint _animalId) public  payable validOwner(_animalId) {
        _payAnimalAction(valuePrice);
        animals[_animalId].level = animals[_animalId].level + 10;
     }

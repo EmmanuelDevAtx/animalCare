@@ -37,7 +37,7 @@ contract AnimalActions is FeedAnimal {
         return animalsOwner;
     }
 
-    function useBath(uint256 _animalId) public validOwner(_animalId) validPermisions(_animalId) {
+    function useBath(uint256 _animalId) public validOwner(_animalId) {
         uint256 currentTime = uint256(block.timestamp) + timeReduceBathroom;
         require(
             animals[_animalId].timeBathroomUse < block.timestamp,
@@ -51,7 +51,7 @@ contract AnimalActions is FeedAnimal {
         );
     }
 
-    function doExercise(uint256 _animalId) public validOwner(_animalId) validPermisions(_animalId) {
+    function doExercise(uint256 _animalId) public validOwner(_animalId){
         require(animals[_animalId].exerciseCount < maxTargetLevel);
         animals[_animalId].exerciseCount = uint8(
             MathLibrary._checkMaxNumber(animals[_animalId].exerciseCount++, maxTargetLevel)
@@ -69,7 +69,7 @@ contract AnimalActions is FeedAnimal {
         );
     }
 
-    function takeABath(uint256 _animalId) public validOwner(_animalId) validPermisions(_animalId) {
+    function takeABath(uint256 _animalId) public validOwner(_animalId)  {
         require(animals[_animalId].dirty > 0);
         _addPoints(2);
         if ((animals[_animalId].dirty / 2) == 5) {
@@ -86,7 +86,7 @@ contract AnimalActions is FeedAnimal {
 
     function play(
         uint256 _animalId
-    ) public validOwner(_animalId) animalCanPlay(_animalId) validPermisions(_animalId) {
+    ) public validOwner(_animalId) animalCanPlay(_animalId) {
         
         uint8 pointsPlay = 2;
         _addPoints(2);

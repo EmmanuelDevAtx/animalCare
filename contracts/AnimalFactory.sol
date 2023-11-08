@@ -44,11 +44,6 @@ contract AnimalFactory is AnimalReward{
         _;
     }
 
-    modifier validPermisions(uint256 _animalId) {
-        require(shareAnimalWith[_animalId] == msg.sender, 'You have not permision');
-        _;
-    }
-
     function createNewAnimal(string memory _name) public {
         require(animalOwnerCount[msg.sender] < 3);
         animals.push(Animal(_name, 0,0,0,5,0,0, 0,uint256(block.timestamp + timeWaitBathroom), false, true, true));
